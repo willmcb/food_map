@@ -24,18 +24,20 @@
           <h3>Hyigene Ratings Map for Local Restautants</h3>
         </div>
         <div class="selectors">
-          <select data-bind="options: $root.starRatings, value: selectedHygieneRating, optionsText: 'starRatingName'">
+          <select data-bind="options: $root.starRatings, value: $root.selectedHygieneRating, optionsText: 'starRatingName'">
           </select>
         </div>
-        <table>
+        <table class="restaurantListTable">
           <tbody data-bind="foreach: listOfRestaurants">
           <tr>
               <td class="datahead" data-bind="text: title"></td>
           </tr>
           <tr>
+              <td>Hygine Rating: </td>
               <td data-bind="text: hyigeneRating"></td>
           </tr>
           <tr>
+              <td>Adress: </td>
               <td data-bind="text: vicinity"></td>
           </tr>
         </table>

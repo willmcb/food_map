@@ -172,14 +172,17 @@ function neighbourHoodMapVeiwModel(restaurantInfo) {
 
   var self = this;
 
-  self.selectedHygieneRating = ko.observable("");
+  self.selectedHygieneRating = ko.observable();
+
+
 
   self.restaurantInfo = restaurantInfo;
 
-  self.listOfRestaurants = ko.observableArray([]);
+  self.listOfRestaurants = ko.observableArray();
 
   console.log("this is in the knocockout function: ", self.restaurantInfo);
   self.starRatings = [
+        { starRatingName: "Please Select a star rating", numericValue: null},
         { starRatingName: "Zero Stars", numericValue: 0 },
         { starRatingName: "One Star", numericValue: 1 },
         { starRatingName: "Two Stars", numericValue: 2  },
@@ -195,13 +198,20 @@ function neighbourHoodMapVeiwModel(restaurantInfo) {
       self.lat = lat;
       self.lng = lng;
       self.vicinity = vicinity;
-    }
+    };
 
   self.initalLoadOfRestaurants = function(){
     for(var i = 0; i < this.restaurantInfo.length; i++) {
       self.listOfRestaurants.push(new self.restaurantListItemDropDown(self.restaurantInfo[i].title, self.restaurantInfo[i].rating, self.restaurantInfo[i].location.lat, self.restaurantInfo[i].location.lng, self.restaurantInfo[i].vicinity));
     }
-  }
+  };
+
+  self.filterRestrautantsBasedOnSelectedHyigeneRating = ko.computed(function(){
+        self.listOfRestaurants.remove(function(item){
+            return item.hygieneRating !== self.selectedHygieneRating.numericValue()});
+        });
+
+
 
 self.initalLoadOfRestaurants();
 
@@ -209,7 +219,7 @@ self.initalLoadOfRestaurants();
 
 
 console.log("This is the list of restaurants: ", this.listOfRestaurants);
-  }
+}
 
 
 
