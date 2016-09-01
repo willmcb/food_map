@@ -6,31 +6,54 @@
     <style>
 
     </style>
-    <script src="js/myCode.js"></script>
+
 
 
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/listStyles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
   </head>
 
   <body>
-    <div class="container-fluid">
-      <div class="options-box">
-        <h1>Find your New York home</h1>
-        <div>
-          <input class="btn-info" type="button" id="show-listings" value="Show Listings">
-          <input class="btn-info" type="button" id="hide-listings" value="Hide Listings">
+      <div style="width: 25%; height: 100%; float: left;">
+        <div class="headerText">
+          <h3>Hyigene Ratings Map for Local Restautants</h3>
         </div>
+        <div class="selectors">
+          <select data-bind="options: $root.starRatings, value: selectedHygieneRating, optionsText: 'starRatingName'">
+          </select>
+        </div>
+        <table>
+          <tbody data-bind="foreach: listOfRestaurants">
+          <tr>
+              <td class="datahead" data-bind="text: title"></td>
+          </tr>
+          <tr>
+              <td data-bind="text: hyigeneRating"></td>
+          </tr>
+          <tr>
+              <td data-bind="text: vicinity"></td>
+          </tr>
+        </table>
       </div>
-    </div>
-    <div id="map"></div>
 
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDavwlCKvp64V-7vsEbXyXAmDTKaGKNFoQ&v=3&callback=initMap" charset="utf-8">
+      <div id="myMap"  style="width: 75%; height: 100%; float: right;" ></div>
+
+
+</div>
+
+
+
+    <script src="JSframeworks/knockout.js"></script>
+    <script src="js/myCode.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDavwlCKvp64V-7vsEbXyXAmDTKaGKNFoQ&callback=initMap" charset="utf-8">
     </script>
 
-    <script src="bootstrap-3.3.7-dist/js/jquery-3.1.0.min.js"></script>
-    <script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+
 
 
   </body>

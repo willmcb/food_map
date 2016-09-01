@@ -1,123 +1,219 @@
-//initalising the map
-var map;
-var markers = [];
-var styles = [{"stylers":[{"hue":"#dd0d0d"}]},{"featureType":"road","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"geometry","stylers":[{"lightness":100},{"visibility":"simplified"}]}]
-function initMap() {
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 40.7413549, lng: -73.9980244},
-    zoom: 13,
-    styles: styles,
+// Google maps event listener to initialize map
+// on page load.
+// http://localhost:8000/index.html
+//  cd /Users/W_McBrien/Desktop/programming/udacity/assessed_projects/"Project 6 - Neighbourhood Map"
+
+
+function initMap(){
+
+  var mapParameters = {
+    center: new google.maps.LatLng(51.441668, 0.149816),
+    zoom: 19,
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
     mapTypeControl: false
-  });
+    };
 
-  // These are the real estate listings that will be shown to the user.
-  // Normally we'd have these in a database instead.
-  var locations = [
-    {title: 'Park Ave Penthouse', location: {lat: 40.7713024, lng: -73.9632393}},
-    {title: 'Chelsea Loft', location: {lat: 40.7444883, lng: -73.9949465}},
-    {title: 'Union Square Open Floor Plan', location: {lat: 40.7347062, lng: -73.9895759}},
-    {title: 'East Village Hip Studio', location: {lat: 40.7281777, lng: -73.984377}},
-    {title: 'TriBeCa Artsy Bachelor Pad', location: {lat: 40.7195264, lng: -74.0089934}},
-    {title: 'Chinatown Homey Space', location: {lat: 40.7180628, lng: -73.9961237}}
-  ];
+  var myMap = new google.maps.Map(document.getElementById("myMap"), mapParameters);
 
-  // initialize info window.
-  var largeInfowindow = new google.maps.InfoWindow();
-
-  //bounds variable which ajusts the screen size to capture all of the markers
-
-  var bounds = new google.maps.LatLngBounds();
-
-  //loop through locations array and create new marker object with parameters assigned to each value
-  for (var i = 0; i < locations.length; i++) {
-    var position = locations[i].location;
-    var title = locations[i].title;
-
-    // new maker object i
-    var marker = new google.maps.Marker({
-      position: position,
-      title: title,
-      animation: google.maps.Animation.DROP,
-      id: i
-    });
-    // push each marker into markers array
-    markers.push(marker);
-
-    //extends the map 'bounds' with each location property of each marker on the map.
-    bounds.extend(marker.position);
-
-    // info windows don't open automatically
-    // hence the event listener
-    marker.addListener('click', function() {
-      populateInfoWindow(this, largeInfowindow);
-    });
-  }
-
-  // function to populate the info windows
-  function populateInfoWindow(marker, infowindow) {
-    // makes sure that infowindow is not already open on this marker
-    if (infowindow.marker != marker) {
-      infowindow.marker = marker;
-      infowindow.setContent('<div>' + marker.title + '</div>' + '<br />' + '<div>' + marker.position + '</div>');
-      infowindow.open(map, marker);
-
-      infowindow.addListener('closeclick', function(){
-          infowindow.setMarker(null);
-      });
-
-      var streetViewService = new google.maps.StreetViewService();
-          var radius = 50;
-          // In case the status is OK, which means the pano was found, compute the
-          // position of the streetview image, then calculate the heading, then get a
-          // panorama from that and set the options
-          function getStreetView(data, status) {
-            if (status == google.maps.StreetViewStatus.OK) {
-              var nearStreetViewLocation = data.location.latLng;
-              var heading = google.maps.geometry.spherical.computeHeading(
-                nearStreetViewLocation, marker.position);
-                infowindow.setContent('<div>' + marker.title + '</div><div id="pano"></div>');
-                var panoramaOptions = {
-                  position: nearStreetViewLocation,
-                  pov: {
-                    heading: heading,
-                    pitch: 30
-                  }
-                };
-              var panorama = new google.maps.StreetViewPanorama(
-                document.getElementById('pano'), panoramaOptions);
-            } else {
-              infowindow.setContent('<div>' + marker.title + '</div>' +
-                '<div>No Street View Found</div>');
-            }
-          }
-          // Use streetview service to get the closest streetview image within
-          // 50 meters of the markers position
-          streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
-          // Open the infowindow on the correct marker.
-
-
-    }
-  }
-  function showListings() {
-
-    //bounds variable which ajusts the screen size to capture all of the markers
-    //var bounds = new google.maps.LatLngBounds();
-    for (var i = 0; i < markers.length; i++) {
-      markers[i].setMap(map);
-      bounds.extend(markers[i].position);
-    }
-    //tells map to fit itself to the values in 'bounds' object
-    map.fitBounds(bounds);
-  }
-
-  function hideListings(){
-    for (var i = 0; i < markers.length; i++) {
-      markers[i].setMap(null);
-      markers[i].setAnimation(null);
-    }
-  }
-
-  document.getElementById("show-listings").addEventListener('click', showListings);
-  document.getElementById("hide-listings").addEventListener('click', hideListings);
-
+  google.maps.event.addDomListener(window, 'load', initMap);
 }
+
+function restaurantListViewRow(resturantObject) {
+    // var self = this;
+    // self.name = name;
+    // self.meal = ko.observable(initialMeal);
+}
+
+var restaurantInfo = [
+    {
+      "title": "Baltizer",
+      "location": {
+        "lat": 51.4408712,
+        "lng": 0.1501393
+      },
+      "rating": 3.7,
+      "vicinity": "5 Mill Row, Bexley",
+      "UKhygieneRatingId": 329218,
+      "hygieneRating": 0
+    },
+    {
+      "title": "Old Bexley Greek Taverna",
+      "location": {
+        "lat": 51.44138,
+        "lng": 0.150663
+      },
+      "rating": 4.6,
+      "vicinity": "82 Bexley High Street, Bexley",
+      "UKhygieneRatingId": 329216,
+      "hygieneRating": 0
+    },
+    {
+      "title": "Flavours Of Morocco",
+      "location": {
+        "lat": 51.441753,
+        "lng": 0.1501886
+      },
+      "rating": 4,
+      "vicinity": "73 Bexley High Street, Bexley",
+      "UKhygieneRatingId": 329213,
+      "hygieneRating": 0
+    },
+    {
+      "title": "Alberello",
+      "location": {
+        "lat": 51.44153249999999,
+        "lng": 0.1505709
+      },
+      "rating": 4.3,
+      "vicinity": "80 High Street, Bexley",
+      "UKhygieneRatingId": 329215,
+      "hygieneRating": 0
+    },
+    {
+      "title": "The Kings Head",
+      "location": {
+        "lat": 51.4417943,
+        "lng": 0.1499139
+      },
+      "rating": 4.2,
+      "vicinity": "65 Bexley High Street, Bexley",
+      "UKhygieneRatingId": 329211,
+      "hygieneRating": 0
+    },
+    {
+      "title": "George",
+      "location": {
+        "lat": 51.441598,
+        "lng": 0.1504081
+      },
+      "rating": 3.9,
+      "vicinity": "74 Bexley High Street, Bexley",
+      "UKhygieneRatingId": 376328,
+      "hygieneRating": 0
+    },
+    {
+      "title": "Maharajah",
+      "location": {
+        "lat": 51.44139149999999,
+        "lng": 0.1507516
+      },
+      "rating": 3.1,
+      "vicinity": "84 Bexley High St, Kent",
+      "UKhygieneRatingId": 329217,
+      "hygieneRating": 0
+    },
+    {
+      "title": "Master Fryer",
+      "location": {
+        "lat": 51.4417722,
+        "lng": 0.1504472
+      },
+      "vicinity": "75 Bexley High Street, Bexley",
+      "UKhygieneRatingId": 329214,
+      "hygieneRating": 0
+    },
+    {
+      "title": "Viceroy Of India",
+      "location": {
+        "lat": 51.4416555,
+        "lng": 0.150723
+      },
+      "rating": 4,
+      "vicinity": "77A Bexley High Street, Bexley",
+      "UKhygieneRatingId": 415080,
+      "hygieneRating": 0
+    }
+  ]
+
+var getHygieneDataFromUKFSAandReturnArray = function(restaurantInfo){
+  var frontOfUKhygieneAPI_URL = "http://api.ratings.food.gov.uk/Establishments/";
+  var hygieneDataArray = []
+  var addHygieneDataToArray = function(restaurantTitle, restaurantId, restaurantHygieneRating, lat, lng, dateOfRating, array) {
+      array.push({ title: restaurantTitle, id: restaurantId, hygieneRating: restaurantHygieneRating, location:{
+        lat: lat,
+        lng: lng
+      }, dateOfRating: dateOfRating});
+  }
+
+  // for loop calls the UK Food Standards Agency (FSA) api once for each restaurant in
+  // the restaurantsInfo array using each restaurant's unique FSA id number as
+  // a reference
+  for(var i = 0; i < restaurantInfo.length; i++) {
+      var hygieneId = restaurantInfo[i].UKhygieneRatingId;
+      var fullURL = frontOfUKhygieneAPI_URL + hygieneId;
+      var hold = 0;
+      $.ajax({
+        url: fullURL,
+        type:'GET',
+        dataType: 'json',
+        crossDomain : true,
+        beforeSend: function (request) {
+               request.setRequestHeader("x-api-version", 2);
+           },
+
+        success: function(data) {
+          console.log("api call successful");
+
+          // success function calls addHygieneDataToArray for each iteration of the loop
+          addHygieneDataToArray(data.BusinessName, data.FHRSID, data.RatingValue,data.geocode.longitude,data.geocode.latitude,data.RatingDate, hygieneDataArray);
+
+          },
+        });
+    }
+    //function returns the hygieneDataArray with info on each restaurant.
+    return hygieneDataArray;
+};
+
+var hygieneDataArray = getHygieneDataFromUKFSAandReturnArray(restaurantInfo);
+
+
+
+function neighbourHoodMapVeiwModel(restaurantInfo) {
+
+  var self = this;
+
+  self.selectedHygieneRating = ko.observable("");
+
+  self.restaurantInfo = restaurantInfo;
+
+  self.listOfRestaurants = ko.observableArray([]);
+
+  console.log("this is in the knocockout function: ", self.restaurantInfo);
+  self.starRatings = [
+        { starRatingName: "Zero Stars", numericValue: 0 },
+        { starRatingName: "One Star", numericValue: 1 },
+        { starRatingName: "Two Stars", numericValue: 2  },
+        { starRatingName: "Three Stars", numericValue: 3  },
+        { starRatingName: "Four Stars", numericValue: 4  },
+        { starRatingName: "Five Stars", numericValue: 5  }
+    ];
+
+  self.restaurantListItemDropDown = function(title, hygieneRating, lat, lng, vicinity) {
+      var self = this;
+      self.title = title;
+      self.hyigeneRating = hygieneRating;
+      self.lat = lat;
+      self.lng = lng;
+      self.vicinity = vicinity;
+    }
+
+  self.initalLoadOfRestaurants = function(){
+    for(var i = 0; i < this.restaurantInfo.length; i++) {
+      self.listOfRestaurants.push(new self.restaurantListItemDropDown(self.restaurantInfo[i].title, self.restaurantInfo[i].rating, self.restaurantInfo[i].location.lat, self.restaurantInfo[i].location.lng, self.restaurantInfo[i].vicinity));
+    }
+  }
+
+self.initalLoadOfRestaurants();
+
+
+
+
+console.log("This is the list of restaurants: ", this.listOfRestaurants);
+  }
+
+
+
+
+
+
+ko.applyBindings(new neighbourHoodMapVeiwModel(restaurantInfo));

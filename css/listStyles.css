@@ -1,0 +1,41 @@
+
+.selectorPanel {
+  margin-top: 1.5%;
+
+  }
+
+.starSelectorDiv {
+  border: solid #fff;
+  margin-top: 5%;
+}
+
+
+.starListItem {
+  list-style: none;
+  display:block;
+  float:left;
+  margin-left: 10px;
+  font-size: 2em;
+  color: orange;
+}
+
+.restaurtantListItem {
+  list-style: none;
+  display: block;
+  float:left;
+  margin-left: 10px;
+}
+
+#weatherDiv{
+  position: fixed;
+  margin-top: 15%;
+  top: 1em;
+  right: 1em;
+  background-color: lightseagreen;
+
+}
+
+#weatherInfo {
+  list-style: none;
+  padding: 10px;
+}
