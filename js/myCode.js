@@ -3,23 +3,27 @@
 // http://localhost:8000/index.html
 //  cd /Users/W_McBrien/Desktop/programming/udacity/assessed_projects/"Project 6 - Neighbourhood Map"
 
+// function to initialze map.
+var myMap = function(){
+  this.mapStyles = [{"stylers":[{"hue":"#dd0d0d"}]},{"featureType":"road","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"geometry","stylers":[{"lightness":100},{"visibility":"simplified"}]},{featureType: "all", elementType: "labels", stylers: [{ visibility: "off" }]}];
 
-function initMap(){
-
-  var mapParameters = {
+  this.mapParameters = {
     center: new google.maps.LatLng(51.441668, 0.149816),
     zoom: 19,
     mapTypeId: google.maps.MapTypeId.ROADMAP,
-    mapTypeControl: false
+    mapTypeControl: false,
+    disableDefaultUI: true,
+    styles: mapStyles
     };
 
-  var myMap = new google.maps.Map(document.getElementById("myMap"), mapParameters);
-
-  google.maps.event.addDomListener(window, 'load', initMap);
+  this.myMap = new google.maps.Map(document.getElementById("myMap"), this.mapParameters);
 }
 
+//google.maps.event.addDomListener(window, 'load', myMap);
 
-function neighbourHoodMapVeiwModel() {
+
+
+var neighbourHoodMapVeiwModel = function(){
   var self = this;
 
 
@@ -134,6 +138,17 @@ function neighbourHoodMapVeiwModel() {
       }
     ]
 
+  // array to hold values for drop-down selector.
+  self.starRatings = [
+          { starRatingName: "Please Select a star rating", numericValue: null},
+          { starRatingName: "Zero Stars", numericValue: 0 },
+          { starRatingName: "One Star", numericValue: 1 },
+          { starRatingName: "Two Stars", numericValue: 2  },
+          { starRatingName: "Three Stars", numericValue: 3  },
+          { starRatingName: "Four Stars", numericValue: 4  },
+          { starRatingName: "Five Stars", numericValue: 5  }
+      ];
+
   // getting data from third party api and incoporating it into the model.
   self.getHygieneDataFromUKFSAandReturnArray = function(restaurantInfo){
       // variables to hold the url and other AJAX info.
@@ -187,7 +202,7 @@ function neighbourHoodMapVeiwModel() {
     var restaurantlistId;
     var hygieneListId;
     var hygieneData;
-    var ratingDate
+    var ratingDate;
     for (var i=0; i < self.restaurantInfo.length; i++) {
       restaurantlistId = self.restaurantInfo[i]["UKhygieneRatingId"];
       for (var k=0; k < self.hygieneDataArray.length; k++) {
@@ -195,7 +210,7 @@ function neighbourHoodMapVeiwModel() {
         hygieneListId = self.hygieneDataArray[k]["id"];
         ratingDate = self.hygieneDataArray[k]["dateOfRating"];
         if (restaurantlistId === hygieneListId) {
-          console.log("SUCCESS!")
+          console.log("Success, restuarants updated with API data!");
           self.restaurantInfo[i]["hygieneRating"] = parseInt(hygieneData);
           self.restaurantInfo[i]["dateOfRating"] = ratingDate;
         };
@@ -205,30 +220,22 @@ function neighbourHoodMapVeiwModel() {
   };
 
   //allows time for data to return from server before combining arrays.
-  // not sure this is the best way to do this but it does work for me...
   setTimeout(function(){ self.updateRestautantsListWithHygieneData(); self.initalLoadOfRestaurants(); }, 800);
 
-  // below code utilises the dependency tracking aspects of ko.js to update the dom/map
-  // based on user input.
 
   // holds the selected hygiene rating filter value from the <select> tag in the DOM
-  self.selectedHygieneRating = ko.observable();
+  self.selectedHygieneRating = function(data){
+                 numericValue: ko.observable(data.numericValue);
+               };
+  self.logsStaRating = function(){console.log(self.selectedHygieneRating.numericValue)};
 
-  // observable array to hold the
+  // observable array to hold the restuarant info.
   self.listOfRestaurants = ko.observableArray();
 
   console.log("this is in the knocockout function: ", self.restaurantInfo);
 
-  self.starRatings = [
-        { starRatingName: "Please Select a star rating", numericValue: null},
-        { starRatingName: "Zero Stars", numericValue: 0 },
-        { starRatingName: "One Star", numericValue: 1 },
-        { starRatingName: "Two Stars", numericValue: 2  },
-        { starRatingName: "Three Stars", numericValue: 3  },
-        { starRatingName: "Four Stars", numericValue: 4  },
-        { starRatingName: "Five Stars", numericValue: 5  }
-    ];
 
+  // class to set up template row objects which get pushed to ko.observableArray (listOfRestaurants)
   self.restaurantListItemDropDown = function(title, hygieneRating, lat, lng, vicinity) {
       var self = this;
       self.title = title;
@@ -238,23 +245,63 @@ function neighbourHoodMapVeiwModel() {
       self.vicinity = vicinity;
     };
 
+    // load restaurant into observable array to display on screen
+
+  // pushes hardcoded restuarant data into ko.observableArray (listOfRestaurants)
   self.initalLoadOfRestaurants = function(){
+
     for(var i = 0; i < self.restaurantInfo.length; i++) {
       self.listOfRestaurants.push(new self.restaurantListItemDropDown(self.restaurantInfo[i].title, self.restaurantInfo[i].hygieneRating, self.restaurantInfo[i].location.lat, self.restaurantInfo[i].location.lng, self.restaurantInfo[i].vicinity));
+      console.log("Button pressed");
     }
   };
 
-  self.filterRestrautantsBasedOnSelectedHyigeneRating = ko.computed(function(){
-        self.listOfRestaurants.remove(function(item){
-            return item.hygieneRating !== self.selectedHygieneRating().numericValue});
-        });
+  // called when user presses the reset button.
+  self.resetInitalLoadOfRestaurants = function(){
+    self.listOfRestaurants = ko.observableArray();
+    self.initalLoadOfRestaurants();
+    console.log("Button pressed");
+  }
+
+//   self.filterRestrautantsBasedOnSelectedHyigeneRating = ko.computed(function(){
+//     if(self.selectedHygieneRating() === "One Star") {
+//        console.log("Propery has been read");
+//     };
+//
+//     for(var i = 0; i < self.restaurantInfo.length; i++) {
+//     if (self.restaurantInfo[i].hygieneRating === self.selectedHygieneRating.numericValue) {
+//       self.listOfRestaurants.push(new self.restaurantListItemDropDown(self.restaurantInfo[i].title, self.restaurantInfo[i].hygieneRating, self.restaurantInfo[i].location.lat, self.restaurantInfo[i].location.lng, self.restaurantInfo[i].vicinity));
+//     };
+//   } http://www.knockmeout.net/2011/04/utility-functions-in-knockoutjs.html
+// });
+
+// self.filteredItems = function() {
+//         var filter = 4;
+//         var removeList = ko.utils.arrayFilter(self.listOfRestaurants(), function(restaurant) {
+//            return restaurant.hygieneRating !== filter;
+//         });
+//         return removeList;
+//     };
+
+self.removeItemsThatDoNotMatchFilterCriteria = function(){
+  var test = self.listOfRestaurants.remove(function(item){item.hygieneRating == 3});
+  console.log(test);
+}
+
+
+// ------- functions to update map ------- //
+
+self.myMap = myMap;
 
 
 
-console.log("This is the list of restaurants: ", this.listOfRestaurants);
+
+
+
 };
 
 
-
-
-ko.applyBindings(new neighbourHoodMapVeiwModel());
+// fires after page has loaded.
+$(function(){
+    ko.applyBindings(new neighbourHoodMapVeiwModel());
+});
