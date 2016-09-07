@@ -3,6 +3,9 @@
 // http://localhost:8000/index.html
 //  cd /Users/W_McBrien/Desktop/programming/udacity/assessed_projects/"Project 6 - Neighbourhood Map"
 
+// throws more errors and helps with debugging.
+'use strict';
+
 // function to initialze map.
 var myMap = function(){
   this.mapStyles = [{"stylers":[{"hue":"#dd0d0d"}]},{"featureType":"road","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"geometry","stylers":[{"lightness":100},{"visibility":"simplified"}]},{featureType: "all", elementType: "labels", stylers: [{ visibility: "off" }]}];
@@ -21,7 +24,7 @@ var myMap = function(){
 
 //google.maps.event.addDomListener(window, 'load', myMap);
 
-
+var map;
 
 var neighbourHoodMapVeiwModel = function(){
   var self = this;
@@ -263,30 +266,10 @@ var neighbourHoodMapVeiwModel = function(){
     console.log("Button pressed");
   }
 
-//   self.filterRestrautantsBasedOnSelectedHyigeneRating = ko.computed(function(){
-//     if(self.selectedHygieneRating() === "One Star") {
-//        console.log("Propery has been read");
-//     };
-//
-//     for(var i = 0; i < self.restaurantInfo.length; i++) {
-//     if (self.restaurantInfo[i].hygieneRating === self.selectedHygieneRating.numericValue) {
-//       self.listOfRestaurants.push(new self.restaurantListItemDropDown(self.restaurantInfo[i].title, self.restaurantInfo[i].hygieneRating, self.restaurantInfo[i].location.lat, self.restaurantInfo[i].location.lng, self.restaurantInfo[i].vicinity));
-//     };
-//   } http://www.knockmeout.net/2011/04/utility-functions-in-knockoutjs.html
-// });
-
-// self.filteredItems = function() {
-//         var filter = 4;
-//         var removeList = ko.utils.arrayFilter(self.listOfRestaurants(), function(restaurant) {
-//            return restaurant.hygieneRating !== filter;
-//         });
-//         return removeList;
-//     };
-
-self.removeItemsThatDoNotMatchFilterCriteria = function(){
-  var test = self.listOfRestaurants.remove(function(item){item.hygieneRating == 3});
-  console.log(test);
-}
+  self.removeItemsThatDoNotMatchFilterCriteria = function(){
+    var test = self.listOfRestaurants.remove(function(item){item.hygieneRating == 3});
+    console.log(test);
+  }
 
 
 // ------- functions to update map ------- //

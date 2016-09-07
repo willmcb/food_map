@@ -27,23 +27,16 @@
           <select data-bind="options: starRatings, value: selectedHygieneRating, optionsText: 'starRatingName'">
 
           </select>
-          <button type="button" data-bind="click: resetInitalLoadOfRestaurants">Reset list!</button>
-          <button type="button" data-bind="click: logsStaRating">Reset list!</button>
-          <button type="button" data-bind="click: removeItemsThatDoNotMatchFilterCriteria">filter!</button>
         </div>
         <table class="restaurantListTable">
-          <tbody data-bind="foreach: listOfRestaurants">
+          <tbody data-bind="foreach: $root.restaurantLocations()">
           <tr>
               <td class="datahead" data-bind="text: title"></td>
           </tr>
           <tr>
-              <td>Hygiene Rating: </td>
-              <td data-bind="text: hyigeneRating"></td>
+              <td class="datahead" data-bind="text: $root.hygieneRating"></td>
           </tr>
-          <tr>
-              <td>Address: </td>
-              <td data-bind="text: vicinity"></td>
-          </tr>
+
         </table>
       </div>
 
@@ -55,7 +48,7 @@
 
 
     <script src="JSframeworks/knockout.js"></script>
-    <script src="js/myCode.js"></script>
+    <script src="js/myCode2.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDavwlCKvp64V-7vsEbXyXAmDTKaGKNFoQ&callback=myMap" charset="utf-8">
     </script>
 
